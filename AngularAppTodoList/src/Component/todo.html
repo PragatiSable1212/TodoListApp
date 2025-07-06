@@ -1,0 +1,35 @@
+<div class="container"></div>
+  <h3>
+    Completed !!!
+  </h3>
+  <table class="notes-table">
+  </table>
+  <form (ngSubmit)="addTodo()" #noteForm="ngForm">
+    <input type="text" name="title" [(ngModel)]="newTodo.title" placeholder="Enter Todo Title" required/>
+    <input type="text" name="description" [(ngModel)]="newTodo.description" placeholder="Enter Todo Description" required/>
+
+    <button type="submit" class="add-button">Add Todo</button>
+  </form>
+  <div>
+    <table border="1" style="width: 100%;">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let todo of todos">
+          <td>{{ todo.id }}</td>
+          <td>{{ todo.title }}</td>
+          <td>{{ todo.description }}</td>
+          <td>
+            <button (click)="editTodo(todo)">Edit</button>
+            <button (click)="deleteTodo(todo.id)">Delete</button>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
