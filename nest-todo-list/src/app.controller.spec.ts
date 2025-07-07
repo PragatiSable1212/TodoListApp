@@ -1,22 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TodoEntity } from './todo.Entity';
 
 describe('AppController', () => {
   let appController: AppController;
+  let appService: AppService;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+  const mockTodos: TodoEntity[] = [
+    { id: 1, title: 'Test Todo', description: 'Test Description' },
+    { id: 2, title: 'Second Todo', description: 'Another description' }
+  ];
+
+  const mockAppService = {
+    getTodos: jest.fn().mockResolvedValue(mockTodos)
+  };
+
+   beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        { provide: AppService, useValue: mockAppService }
+      ]
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appController = module.get<AppController>(AppController);
+    appService = module.get<AppService>(AppService);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
+  it('should return all todos', async () => {
+    const result = await appController.getTodos();
+    expect(result).toEqual(mockTodos);
+    expect(appService.getTodos).toHaveBeenCalled();
   });
 });
