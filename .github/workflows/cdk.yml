@@ -1,4 +1,4 @@
-name: Build and Deploy Fullstack App to AWS
+name: Build and Deploy App to AWS
 
 on:
   push:
@@ -49,7 +49,7 @@ jobs:
 
       - name: Install CDK dependencies
         working-directory: cdk
-        run: npm ci
+        run: npm install
 
       - name: Deploy with CDK
         working-directory: cdk
