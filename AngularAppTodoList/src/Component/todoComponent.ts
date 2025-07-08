@@ -49,14 +49,7 @@ export class TodoComponent implements OnInit {
   }
 
   editTodo(todo: TodoEntity) {
-    console.log('Editing todo:', todo.title, todo.description);
-    console.log('Todo ID:', this.newTodo);
-    todo=this.newTodo;
-    this.todoService.updateTodo(todo).subscribe({
-      next:(resp) => {
-        console.log('Todo updated successfully:', resp);
-      }
-    });
+    this.newTodo=todo;
   }
 
   getTodos() {

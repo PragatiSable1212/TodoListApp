@@ -1,0 +1,59 @@
+name: Build and Deploy Fullstack App to AWS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ap-south-1
+      CDK_DEFAULT_REGION: ap-south-1
+      CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js for Angular
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Angular dependencies
+        working-directory: AngularAppTodoList
+        run: npm ci
+
+      - name: Build Angular App
+        working-directory: AngularAppTodoList
+        run: npm run build
+
+      - name: Set up Node.js for NestJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install NestJS dependencies
+        working-directory: nest-todo-list
+        run: npm ci
+
+      - name: Build NestJS App
+        working-directory: nest-todo-list
+        run: npm run build
+
+      - name: Install CDK CLI
+        run: npm install -g aws-cdk
+
+      - name: Install CDK dependencies
+        working-directory: cdk
+        run: npm ci
+
+      - name: Deploy with CDK
+        working-directory: cdk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: cdk deploy --require-approval never
